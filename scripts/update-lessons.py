@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Сканує lessons/, materials/ і перезаписує lessons.js та materials.js (лише стандартна бібліотека).
 
-lessons/6-8, lessons/9-12   «День N — Назва.html» -> день N, назва «Назва» (інакше <title>)
-materials/programs          PDF програм (у назві файлу має бути 6-8 або 9-12)
+lessons/6-8, lessons/9-14   «День N — Назва.html» -> день N, назва «Назва» (інакше <title>)
+materials/programs          PDF програм (у назві файлу має бути 6-8 або 9-14)
 materials/scripts           scripts.json — текст скриптів продажу (потім python3 scripts/build-docx.py збирає з нього docx)
 materials/photo             фото табору (jpg/png/webp)
 """
@@ -10,15 +10,15 @@ import json, re, html
 from pathlib import Path
 
 root = Path(__file__).resolve().parent.parent
-AGES = ("6-8", "9-12")
+AGES = ("6-8", "9-14")
 
 def num_key(p):
     m = re.match(r"\D*(\d+)", p.stem)
     return (int(m.group(1)) if m else 10**6, p.name.lower())
 
 def age_of(name):
-    # шукаємо 9-12 першим, щоб не сплутати з "12" в іншій групі
-    for a in ("9-12", "6-8"):
+    # шукаємо 9-14 першим, щоб не сплутати з "12" в іншій групі
+    for a in ("9-14", "6-8"):
         if a in name:
             return a
     return None

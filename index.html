@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#03306f">
 <meta property="og:title" content="Зимовий ІТ табір — STEP IT Academy">
 <meta property="og:image" content="assets/logo.png">
-<meta name="description" content="Матеріали уроків Зимового ІТ табору STEP IT Academy для груп 6–8 та 9–12 років.">
+<meta name="description" content="Матеріали уроків Зимового ІТ табору STEP IT Academy для груп 6–8 та 9–14 років.">
 <link rel="icon" href="assets/logo.png">
 <style>
 :root{--navy:#03306f;--navy-d:#022252;--ice:#eef4fb;--line:#d6e0ee;--text:#0f2142;--muted:#5d6f8c}
@@ -136,7 +136,7 @@ footer .wrap{padding-top:18px;padding-bottom:18px}
   <div class="bar">
     <div class="tabs" role="group" aria-label="Вікова група">
       <button class="tab" data-age="6-8" aria-pressed="true">6–8 років<span class="cnt"></span></button>
-      <button class="tab" data-age="9-12" aria-pressed="false">9–12 років<span class="cnt"></span></button>
+      <button class="tab" data-age="9-14" aria-pressed="false">9–14 років<span class="cnt"></span></button>
     </div>
     <input id="q" type="search" placeholder="Пошук уроку" aria-label="Пошук уроку">
   </div>
@@ -155,7 +155,7 @@ footer .wrap{padding-top:18px;padding-bottom:18px}
 <script>
 (function(){
   var all = window.LESSONS || [], q = "";
-  var age = (location.hash.slice(1)==="9-12") ? "9-12" : "6-8";
+  var age = (location.hash.slice(1)==="9-14") ? "9-14" : "6-8";
   var list = document.getElementById("list");
   var dl = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg>';
   function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
