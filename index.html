@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Зимовий ІТ табір — STEP IT Academy</title>
+<meta name="theme-color" content="#03306f">
+<meta property="og:title" content="Зимовий ІТ табір — STEP IT Academy">
+<meta property="og:image" content="assets/logo.png">
 <meta name="description" content="Матеріали уроків Зимового ІТ табору STEP IT Academy для груп 6–8 та 9–12 років.">
 <link rel="icon" href="assets/logo.png">
 <style>
@@ -11,9 +14,9 @@
 *{box-sizing:border-box}
 body{margin:0;background:#fff;color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
 .wrap{max-width:960px;margin:0 auto;padding:0 20px}
-header{border-bottom:1px solid var(--line)}
-header .wrap{display:flex;align-items:center;gap:20px;padding-top:18px;padding-bottom:18px}
-header img{height:84px;width:auto;display:block}
+header{border-bottom:4px solid var(--ice)}
+header .wrap{display:flex;align-items:center;gap:24px;padding-top:20px;padding-bottom:20px}
+header img{height:96px;width:auto;display:block}
 header h1{margin:0;font-size:clamp(22px,4.5vw,34px);line-height:1.1;letter-spacing:-.02em;font-weight:800;text-transform:uppercase;color:var(--navy)}
 header p{margin:4px 0 0;color:var(--muted);font-size:15px}
 .drive{background:var(--navy);color:#fff}
@@ -34,18 +37,27 @@ main.wrap{padding-top:36px;padding-bottom:56px}
 .tab{min-height:44px;padding:0 20px;border:0;background:#fff;color:var(--navy);font:600 15px/1 inherit;font-family:inherit;cursor:pointer}
 .tab+.tab{border-left:2px solid var(--navy)}
 .tab[aria-pressed="true"]{background:var(--navy);color:#fff}
+.tab:hover:not([aria-pressed="true"]){background:var(--ice)}
 #q{flex:1;min-width:180px;min-height:44px;padding:0 14px;border:2px solid var(--line);border-radius:6px;font:inherit;color:var(--text)}
 #q:focus{border-color:var(--navy)}
 .list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
-.item{display:grid;grid-template-columns:48px 1fr auto;gap:8px 16px;align-items:center;padding:18px 0;border-bottom:1px solid var(--line)}
+.item{position:relative;transition:background .15s;display:grid;grid-template-columns:48px 1fr auto;gap:8px 16px;align-items:center;padding:18px 0;border-bottom:1px solid var(--line)}
+.item:hover{background:var(--ice)}
+.item h3 a{color:inherit;text-decoration:none}
+.item h3 a::after{content:"";position:absolute;inset:0}
+.acts{position:relative;z-index:1}
+.item{padding-left:12px;padding-right:12px}
+.cnt{margin-left:8px;font-weight:500;opacity:.7;font-variant-numeric:tabular-nums}
 .num{font-size:22px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums}
 .item h3{margin:0;font-size:18px;line-height:1.3}
 .item p{margin:2px 0 0;color:var(--muted);font-size:14px}
 .acts{display:flex;gap:8px}
+.item h3 a:focus-visible{outline:3px solid #6aa0ff;outline-offset:4px}
 .empty{padding:40px 0;color:var(--muted);border-bottom:1px solid var(--line)}
 footer{background:var(--ice);color:var(--muted);font-size:13px}
 footer .wrap{padding-top:18px;padding-bottom:18px}
 @media(max-width:640px){
+  .item{padding-left:4px;padding-right:4px}
   header img{height:64px}
   .drive .btn{width:100%}
   .tabs{width:100%}.tab{flex:1;padding:0 8px}
@@ -79,8 +91,8 @@ footer .wrap{padding-top:18px;padding-bottom:18px}
 <main class="wrap">
   <div class="bar">
     <div class="tabs" role="group" aria-label="Вікова група">
-      <button class="tab" data-age="6-8" aria-pressed="true">6–8 років</button>
-      <button class="tab" data-age="9-12" aria-pressed="false">9–12 років</button>
+      <button class="tab" data-age="6-8" aria-pressed="true">6–8 років<span class="cnt"></span></button>
+      <button class="tab" data-age="9-12" aria-pressed="false">9–12 років<span class="cnt"></span></button>
     </div>
     <input id="q" type="search" placeholder="Пошук уроку" aria-label="Пошук уроку">
   </div>
@@ -92,11 +104,21 @@ footer .wrap{padding-top:18px;padding-bottom:18px}
 <script src="lessons.js"></script>
 <script>
 (function(){
-  var all = window.LESSONS || [], age = "6-8", q = "";
+  var all = window.LESSONS || [], q = "";
+  var age = (location.hash.slice(1)==="9-12") ? "9-12" : "6-8";
   var list = document.getElementById("list");
   var dl = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg>';
   function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+  function sync(){
+    document.querySelectorAll(".tab").forEach(function(t){
+      var a=t.dataset.age;
+      t.setAttribute("aria-pressed",a===age);
+      var n=all.filter(function(l){return l.age===a}).length;
+      t.querySelector(".cnt").textContent=n?n:"";
+    });
+  }
   function render(){
+    sync();
     var items = all.filter(function(l){return l.age===age});
     items.forEach(function(l,i){l._n=i+1});
     items = items.filter(function(l){return (l.title+" "+(l.desc||"")).toLowerCase().indexOf(q)>-1});
@@ -104,7 +126,7 @@ footer .wrap{padding-top:18px;padding-bottom:18px}
     list.innerHTML = items.map(function(l){
       var f = encodeURI(l.file), name = l.file.split("/").pop();
       return '<li class="item"><span class="num">'+String(l._n).padStart(2,"0")+'</span>'+
-        '<div><h3>'+esc(l.title)+'</h3>'+(l.desc?'<p>'+esc(l.desc)+'</p>':'')+'</div>'+
+        '<div><h3><a href="'+f+'" target="_blank" rel="noopener">'+esc(l.title)+'</a></h3>'+(l.desc?'<p>'+esc(l.desc)+'</p>':'')+'</div>'+
         '<div class="acts"><a class="btn" href="'+f+'" target="_blank" rel="noopener">Відкрити</a>'+
         '<a class="btn line" href="'+f+'" download="'+esc(name)+'">'+dl+'Завантажити</a></div></li>';
     }).join("");
@@ -112,7 +134,7 @@ footer .wrap{padding-top:18px;padding-bottom:18px}
   document.querySelectorAll(".tab").forEach(function(b){
     b.addEventListener("click",function(){
       age=b.dataset.age;
-      document.querySelectorAll(".tab").forEach(function(x){x.setAttribute("aria-pressed",x===b)});
+      try{history.replaceState(null,"","#"+age)}catch(e){}
       render();
     });
   });
