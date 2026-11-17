@@ -3,12 +3,11 @@
 
 lessons/6-8, lessons/9-12   «День N — Назва.html» -> день N, назва «Назва» (інакше <title>)
 materials/programs          PDF програм (у назві файлу має бути 6-8 або 9-12)
-materials/scripts           DOCX скриптів продажу (6-8 / 9-12 у назві); текст читається зі самого файлу
+materials/scripts           scripts.json — текст скриптів продажу (потім python3 scripts/build-docx.py збирає з нього docx)
 materials/photo             фото табору (jpg/png/webp)
 """
-import json, re, html, zipfile
+import json, re, html
 from pathlib import Path
-from xml.etree import ElementTree as ET
 
 root = Path(__file__).resolve().parent.parent
 AGES = ("6-8", "9-12")
@@ -43,32 +42,6 @@ for age in AGES:
     "// Згенеровано: python3 scripts/update-lessons.py\nwindow.LESSONS = "
     + json.dumps(lessons, ensure_ascii=False, indent=2) + ";\n", encoding="utf-8")
 
-# ---------- docx -> абзаци ----------
-W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
-def read_docx(path):
-    with zipfile.ZipFile(path) as z:
-        tree = ET.fromstring(z.read("word/document.xml"))
-    paras = []
-    for p in tree.iter(W + "p"):
-        runs = []
-        for r in p.iter(W + "r"):
-            rpr = r.find(W + "rPr")
-            bold = rpr is not None and rpr.find(W + "b") is not None and \
-                rpr.find(W + "b").get(W + "val", "true") not in ("0", "false")
-            s = ""
-            for el in r:
-                if el.tag == W + "t": s += el.text or ""
-                elif el.tag in (W + "br", W + "cr"): s += "\n"
-                elif el.tag == W + "tab": s += "\t"
-            if s:
-                if runs and runs[-1]["b"] == bold: runs[-1]["t"] += s
-                else: runs.append({"t": s, "b": bold})
-        if runs and "".join(x["t"] for x in runs).strip():
-            # прибираємо кінцеві переноси
-            runs[-1]["t"] = runs[-1]["t"].rstrip("\n")
-            paras.append(runs)
-    return paras
-
 # ---------- матеріали ----------
 def listdir(sub, exts):
     d = root / "materials" / sub
@@ -81,9 +54,12 @@ for f in listdir("programs", {".pdf"}):
     programs.append({"age": a, "title": f.stem, "file": rel(f), "preview": rel(prev) if prev.exists() else ""})
 
 scripts = []
-for f in listdir("scripts", {".docx"}):
-    paras = read_docx(f)
-    scripts.append({"age": age_of(f.name), "title": f.stem, "file": rel(f), "paras": paras})
+sj = root / "materials" / "scripts" / "scripts.json"
+if sj.exists():
+    for x in json.loads(sj.read_text(encoding="utf-8")):
+        f = root / "materials" / "scripts" / f"Скрипт {x['age']} років.docx"
+        x["file"] = rel(f) if f.exists() else ""
+        scripts.append(x)
 
 photos = [{"title": f.stem, "file": rel(f)} for f in listdir("photo", {".jpg", ".jpeg", ".png", ".webp"})]
 

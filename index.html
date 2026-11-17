@@ -70,22 +70,32 @@ section.blk>h2{margin:0 0 16px;padding-bottom:10px;border-bottom:2px solid var(-
 .card .acts{flex-wrap:wrap}
 .photo{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
 .photo img{width:240px;max-width:100%;height:auto;display:block;border-radius:6px;border:1px solid var(--line)}
-.scripts{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;align-items:start}
 .script{border:1px solid var(--line);border-radius:8px;overflow:hidden}
-.script header{border:0;background:var(--ice);padding:14px 16px}
-.script h3{margin:0 0 10px;font-size:17px}
-.script .body{padding:16px;font-size:15px;line-height:1.6}
-.script .body p{margin:0 0 12px}.script .body p:last-child{margin:0}
+.script-top{background:var(--ice);padding:18px 20px}
+.script-top h3{margin:0 0 14px;font-size:20px;line-height:1.3}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 0 16px}
+.fact{background:#fff;border:1px solid var(--line);border-radius:6px;padding:10px 12px}
+.fact span{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.fact b{display:block;font-size:15px;margin-top:2px;color:var(--navy)}
+.fact.price b{font-size:20px}
+.sec{padding:18px 20px;border-top:1px solid var(--line)}
+.sec-h{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+.sec-h h4{margin:0;font-size:15px;font-weight:800;letter-spacing:.02em;color:var(--navy)}
+.sec p{margin:0 0 10px;font-size:15px;line-height:1.6}.sec p:last-child{margin:0}
+.sec.short{background:var(--ice)}
+.sec.short pre{margin:0;font:inherit;font-size:15px;line-height:1.6;white-space:pre-wrap}
 .script .acts,.photo .acts{flex-wrap:wrap}
+.btn.mini{min-height:32px;padding:0 12px;font-size:13px;border-width:1px;flex:none}
 .btn.sm{min-height:38px;padding:0 14px;font-size:14px}
 footer{background:var(--ice);color:var(--muted);font-size:13px}
 footer .wrap{padding-top:18px;padding-bottom:18px}
-@media(max-width:820px){.cards,.scripts{grid-template-columns:1fr}}
+@media(max-width:820px){.cards{grid-template-columns:1fr}.facts{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:640px){
   section.blk{margin-top:44px}
   .card img{width:96px}
   .photo img{width:100%;max-width:360px}
-  .script .acts .btn,.photo .acts .btn,.card .acts .btn{flex:1 1 150px}
+  .script-top .acts .btn,.photo .acts .btn,.card .acts .btn{flex:1 1 150px}
+  .script-top,.sec{padding-left:14px;padding-right:14px}
   .item{padding-left:4px;padding-right:4px}
   header img{height:64px}
   .drive .btn{width:100%}
@@ -135,7 +145,7 @@ footer .wrap{padding-top:18px;padding-bottom:18px}
 
   <section class="blk" id="programs" hidden><h2>Програми навчання</h2><div class="cards" id="programs-list"></div></section>
   <section class="blk" id="photo" hidden><h2>Фото табору</h2><div class="photo" id="photo-list"></div></section>
-  <section class="blk" id="scripts" hidden><h2>Скрипти для продажу</h2><div class="scripts" id="scripts-list"></div></section>
+  <section class="blk" id="scripts" hidden><h2>Скрипти для продажу</h2><div class="tabs" role="group" aria-label="Скрипт для групи" id="script-tabs" style="margin-bottom:16px;display:inline-flex"></div><div id="scripts-list"></div></section>
 </main>
 
 <footer><div class="wrap">STEP IT Academy · Зимовий ІТ табір</div></footer>
@@ -213,28 +223,40 @@ footer .wrap{padding-top:18px;padding-bottom:18px}
     }).join("");
   }
 
-  function scriptText(x){return x.paras.map(function(p){return p.map(function(r){return r.t.replace(/\t/g,"")}).join("")}).join("\n\n")}
+  function lineText(l){return (l.h?l.h+" ":"")+l.t}
+  function blockText(b){return b.title+"\n"+b.lines.map(lineText).join("\n")}
+  function fullText(x){return x.name+"\n\n"+x.facts.map(function(f){return f[0]+": "+f[1]}).join("\n")+"\n\n"+x.blocks.map(blockText).join("\n\n")+"\n\nКоротке повідомлення\n"+x.short}
+  function copyText(txt,btn){
+    var lab=btn.querySelector("span");
+    function done(){var o=lab.textContent;lab.textContent="Скопійовано";setTimeout(function(){lab.textContent=o},1800)}
+    function fallback(){var t=document.createElement("textarea");t.value=txt;t.style.position="fixed";t.style.opacity="0";document.body.appendChild(t);t.select();try{document.execCommand("copy");done()}catch(_){}document.body.removeChild(t)}
+    if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(txt).then(done,fallback)}else fallback();
+  }
   if((M.scripts||[]).length){
     show("scripts");
-    var box=document.getElementById("scripts-list");
-    box.innerHTML = M.scripts.map(function(x,i){
-      var body = x.paras.map(function(p){
-        return "<p>"+p.map(function(r){
-          var t=esc(r.t.replace(/\t/g,"")).replace(/\n/g,"<br>");
-          return r.b?"<strong>"+t+"</strong>":t;
-        }).join("")+"</p>";
-      }).join("");
-      return '<article class="script"><header><h3>Скрипт · '+esc(ageLabel(x.age))+'</h3><div class="acts">'+
-        '<button class="btn sm" type="button" data-copy="'+i+'">'+ico.copy+'<span>Копіювати текст</span></button>'+
-        dlLink(x.file,"Завантажити .docx","line sm")+'</div></header><div class="body">'+body+'</div></article>';
-    }).join("");
-    box.addEventListener("click",function(e){
-      var b=e.target.closest("[data-copy]"); if(!b) return;
-      var txt=scriptText(M.scripts[+b.dataset.copy]), lab=b.querySelector("span");
-      function done(){lab.textContent="Скопійовано";setTimeout(function(){lab.textContent="Копіювати текст"},1800)}
-      if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(txt).then(done,fallback)}else fallback();
-      function fallback(){var t=document.createElement("textarea");t.value=txt;t.style.position="fixed";t.style.opacity="0";document.body.appendChild(t);t.select();try{document.execCommand("copy");done()}catch(_){}document.body.removeChild(t)}
+    var sbox=document.getElementById("scripts-list"), stabs=document.getElementById("script-tabs"), cur=0;
+    stabs.innerHTML=M.scripts.map(function(x,i){return '<button class="tab" type="button" data-i="'+i+'" aria-pressed="'+(i===0)+'">'+esc(ageLabel(x.age))+'</button>'}).join("");
+    function renderScript(){
+      var x=M.scripts[cur];
+      stabs.querySelectorAll(".tab").forEach(function(t){t.setAttribute("aria-pressed",+t.dataset.i===cur)});
+      sbox.innerHTML='<article class="script"><div class="script-top"><h3>'+esc(x.name)+'</h3>'+
+        '<div class="facts">'+x.facts.map(function(f){return '<div class="fact'+(f[0]==="Вартість"?' price':'')+'"><span>'+esc(f[0])+'</span><b>'+esc(f[1])+'</b></div>'}).join("")+'</div>'+
+        '<div class="acts"><button class="btn sm" type="button" data-all><span>Копіювати весь скрипт</span></button>'+
+        (x.file?dlLink(x.file,"Завантажити .docx","line sm"):"")+'</div></div>'+
+        x.blocks.map(function(b,bi){
+          return '<section class="sec"><div class="sec-h"><h4>'+esc(b.title)+'</h4><button class="btn line mini" type="button" data-b="'+bi+'"><span>Копіювати</span></button></div>'+
+            b.lines.map(function(l){return '<p>'+(l.h?'<strong>'+esc(l.h)+'</strong> ':'')+esc(l.t)+'</p>'}).join("")+'</section>';
+        }).join("")+
+        '<section class="sec short"><div class="sec-h"><h4>Коротке повідомлення для месенджера</h4><button class="btn line mini" type="button" data-s><span>Копіювати</span></button></div><pre>'+esc(x.short)+'</pre></section></article>';
+    }
+    stabs.addEventListener("click",function(e){var t=e.target.closest(".tab");if(!t)return;cur=+t.dataset.i;renderScript()});
+    sbox.addEventListener("click",function(e){
+      var btn=e.target.closest("button");if(!btn)return;var x=M.scripts[cur];
+      if(btn.hasAttribute("data-all"))copyText(fullText(x),btn);
+      else if(btn.hasAttribute("data-s"))copyText(x.short,btn);
+      else if(btn.dataset.b!==undefined)copyText(blockText(x.blocks[+btn.dataset.b]),btn);
     });
+    renderScript();
   }
 })();
 </script>
