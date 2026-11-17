@@ -74,8 +74,13 @@ section.panel{animation:fade .18s ease-out}
 .card .t{margin:0 0 4px;font-size:18px;font-weight:700;line-height:1.3}
 .card .m{margin:0 0 14px;color:var(--muted);font-size:14px}
 .card .acts{flex-wrap:wrap}
-.photo{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
-.photo img{width:240px;max-width:100%;height:auto;display:block;border-radius:6px;border:1px solid var(--line)}
+.photo{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.pic{border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column}
+.pic a.thumb{display:flex;align-items:center;justify-content:center;height:240px;background:var(--ice)}
+.pic img{max-width:100%;max-height:100%;width:auto;height:auto;display:block}
+.pic .info{padding:14px 16px 16px}
+.pic .cap{margin:0 0 12px;font-weight:700;line-height:1.3}
+.pic .cap small{display:block;margin-top:2px;font-weight:500;font-size:13px;color:var(--muted)}
 .script{border:1px solid var(--line);border-radius:8px;overflow:hidden}
 .script-top{background:var(--ice);padding:18px 20px}
 .script-top h3{margin:0 0 14px;font-size:20px;line-height:1.3}
@@ -90,7 +95,7 @@ section.panel{animation:fade .18s ease-out}
 .sec p{margin:0 0 10px;font-size:15px;line-height:1.6}.sec p:last-child{margin:0}
 .sec.short{background:var(--ice)}
 .sec.short pre{margin:0;font:inherit;font-size:15px;line-height:1.6;white-space:pre-wrap}
-.script .acts,.photo .acts{flex-wrap:wrap}
+.script .acts,.pic .acts{flex-wrap:wrap}
 .btn.mini{min-height:32px;padding:0 12px;font-size:13px;border-width:1px;flex:none}
 .btn.sm{min-height:38px;padding:0 14px;font-size:14px}
 footer{background:var(--ice);color:var(--muted);font-size:13px}
@@ -99,8 +104,7 @@ footer .wrap{padding-top:18px;padding-bottom:18px}
 @media(max-width:640px){
   nav.main button{padding:0 14px}
     .card img{width:96px}
-  .photo img{width:100%;max-width:360px}
-  .script-top .acts .btn,.photo .acts .btn,.card .acts .btn{flex:1 1 150px}
+  .script-top .acts .btn,.pic .acts .btn,.card .acts .btn{flex:1 1 130px}
   .script-top,.sec{padding-left:14px;padding-right:14px}
   .item{padding-left:4px;padding-right:4px}
   header img{height:64px}
@@ -143,7 +147,7 @@ footer .wrap{padding-top:18px;padding-bottom:18px}
 </div></nav>
 
 <main class="wrap">
-  <section class="panel" id="lessons">
+  <section class="panel" id="sec-lessons">
   <div class="bar">
     <div class="tabs" role="group" aria-label="Вікова група">
       <button class="tab" data-age="6-8" aria-pressed="true">6–8 років<span class="cnt"></span></button>
@@ -154,9 +158,9 @@ footer .wrap{padding-top:18px;padding-bottom:18px}
   <ol id="list" class="list"></ol>
   </section>
 
-  <section class="panel" id="programs" hidden><div class="cards" id="programs-list"></div></section>
-  <section class="panel" id="photo" hidden><div class="photo" id="photo-list"></div></section>
-  <section class="panel" id="scripts" hidden><div class="tabs" role="group" aria-label="Скрипт для групи" id="script-tabs" style="margin-bottom:16px;display:inline-flex"></div><div id="scripts-list"></div></section>
+  <section class="panel" id="sec-programs" hidden><div class="cards" id="programs-list"></div></section>
+  <section class="panel" id="sec-photo" hidden><div class="photo" id="photo-list"></div></section>
+  <section class="panel" id="sec-scripts" hidden><div class="tabs" role="group" aria-label="Скрипт для групи" id="script-tabs" style="margin-bottom:16px;display:inline-flex"></div><div id="scripts-list"></div></section>
 </main>
 
 <footer><div class="wrap">STEP IT Academy · Зимовий ІТ табір</div></footer>
@@ -171,7 +175,7 @@ footer .wrap{padding-top:18px;padding-bottom:18px}
   var dl = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg>';
   function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
   function sync(){
-    document.querySelectorAll("#lessons .tab").forEach(function(t){
+    document.querySelectorAll("#sec-lessons .tab").forEach(function(t){
       var a=t.dataset.age;
       t.setAttribute("aria-pressed",a===age);
       var n=all.filter(function(l){return l.age===a}).length;
@@ -192,7 +196,7 @@ footer .wrap{padding-top:18px;padding-bottom:18px}
         '<a class="btn line" href="'+f+'" download="'+esc(name)+'">'+dl+'Завантажити</a></div></li>';
     }).join("");
   }
-  document.querySelectorAll("#lessons .tab").forEach(function(b){
+  document.querySelectorAll("#sec-lessons .tab").forEach(function(b){
     b.addEventListener("click",function(){
       age=b.dataset.age;
       render();
@@ -225,12 +229,18 @@ footer .wrap{padding-top:18px;padding-bottom:18px}
 
   if((M.photos||[]).length){
     show("photo");
-    document.getElementById("photo-list").innerHTML = M.photos.map(function(x){
+    var pl=document.getElementById("photo-list");
+    pl.innerHTML = M.photos.map(function(x){
       var f=encodeURI(x.file);
-      return '<a href="'+f+'" target="_blank" rel="noopener"><img src="'+f+'" alt="Зимовий ІТ табір" loading="lazy"></a>'+
-        '<div class="acts">'+dlLink(x.file,"Завантажити фото","")+
-        '<a class="btn line" href="'+f+'" target="_blank" rel="noopener">'+ico.view+'Відкрити</a></div>';
+      return '<article class="pic"><a class="thumb" href="'+f+'" target="_blank" rel="noopener"><img src="'+f+'" alt="'+esc(x.title)+'" loading="lazy"></a>'+
+        '<div class="info"><p class="cap">'+esc(x.title)+'<small>JPG</small></p>'+
+        '<div class="acts">'+dlLink(x.file,"Завантажити","sm")+
+        '<a class="btn line sm" href="'+f+'" target="_blank" rel="noopener">'+ico.view+'Відкрити</a></div></div></article>';
     }).join("");
+    pl.querySelectorAll("img").forEach(function(im){
+      function dim(){var sm=im.closest(".pic").querySelector("small");if(im.naturalWidth)sm.textContent=im.naturalWidth+" × "+im.naturalHeight+" · JPG"}
+      if(im.complete)dim();else im.addEventListener("load",dim);
+    });
   }
 
   function lineText(l){return (l.h?l.h+" ":"")+l.t}
@@ -272,7 +282,7 @@ footer .wrap{padding-top:18px;padding-bottom:18px}
   var secs=["lessons","programs","photo","scripts"], sec="lessons";
   var navBtns=document.querySelectorAll("nav.main [data-sec]");
   function curAge(){
-    if(sec==="lessons"){var t=document.querySelector("#lessons .tab[aria-pressed='true']");return t?t.dataset.age:""}
+    if(sec==="lessons"){var t=document.querySelector("#sec-lessons .tab[aria-pressed='true']");return t?t.dataset.age:""}
     if(sec==="scripts"){var t2=document.querySelector("#script-tabs .tab[aria-pressed='true']");return t2?M.scripts[+t2.dataset.i].age:""}
     return "";
   }
@@ -281,7 +291,7 @@ footer .wrap{padding-top:18px;padding-bottom:18px}
     var btn=document.querySelector('nav.main [data-sec="'+id+'"]');
     if(!btn||btn.hidden)id="lessons";
     sec=id;
-    secs.forEach(function(s){document.getElementById(s).hidden=(s!==id)});
+    secs.forEach(function(s){document.getElementById("sec-"+s).hidden=(s!==id)});
     navBtns.forEach(function(b){b.setAttribute("aria-selected",b.dataset.sec===id)});
     writeHash();
   }
@@ -291,7 +301,7 @@ footer .wrap{padding-top:18px;padding-bottom:18px}
     if(secs.indexOf(id)<0)id="lessons";
     setSection(id);
     if(a){
-      var t=id==="lessons"?document.querySelector('#lessons .tab[data-age="'+a+'"]'):null;
+      var t=id==="lessons"?document.querySelector('#sec-lessons .tab[data-age="'+a+'"]'):null;
       if(id==="scripts"){var i=(M.scripts||[]).findIndex(function(x){return x.age===a});if(i>-1)t=document.querySelector('#script-tabs .tab[data-i="'+i+'"]')}
       if(t){t.click();writeHash()}
     }
