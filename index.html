@@ -3,127 +3,110 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Зимовий ІТ табір — портал викладача</title>
-<meta name="description" content="Матеріали уроків Зимового ІТ табору для вікових груп 6–8 та 9–12 років.">
+<title>Зимовий ІТ табір — STEP IT Academy</title>
+<meta name="description" content="Матеріали уроків Зимового ІТ табору STEP IT Academy для груп 6–8 та 9–12 років.">
+<link rel="icon" href="assets/logo.png">
 <style>
-:root{
-  --bg:#f3f8fc; --card:#fff; --text:#12263a; --muted:#5a6f84; --line:#d9e6f1;
-  --brand:#1e6fd9; --brand-d:#1553a6; --accent:#7c4dff; --ok:#12805c;
-  --r:16px; --shadow:0 4px 18px rgba(20,60,110,.08);
-}
-@media (prefers-color-scheme:dark){
-  :root{--bg:#0d1a2a; --card:#152638; --text:#e8f1fa; --muted:#9bb2c8; --line:#25405a;
-    --brand:#5aa2ff; --brand-d:#8cbfff; --accent:#a58bff; --ok:#4cd6a4; --shadow:none}
-}
+:root{--navy:#03306f;--navy-d:#022252;--ice:#eef4fb;--line:#d6e0ee;--text:#0f2142;--muted:#5d6f8c}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-a{color:var(--brand)}
-.wrap{max-width:1000px;margin:0 auto;padding:0 16px}
-header{background:linear-gradient(135deg,#0f4c9c,#5b3fd6);color:#fff;padding:40px 0 48px;position:relative;overflow:hidden}
-header::after{content:"❄ ❅ ❆ ❄ ❅";position:absolute;right:12px;top:8px;font-size:26px;opacity:.25;letter-spacing:14px}
-header h1{margin:0 0 8px;font-size:clamp(26px,5vw,40px);line-height:1.15}
-header p{margin:0;max-width:620px;opacity:.92;font-size:clamp(15px,2.5vw,18px)}
-main{padding:24px 0 48px}
-section{margin-top:28px}
-h2{font-size:22px;margin:0 0 12px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--shadow)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 18px;border-radius:12px;border:2px solid var(--brand);background:var(--brand);color:#fff;font-weight:600;font-size:15px;font-family:inherit;text-decoration:none;cursor:pointer}
-.btn:hover{background:var(--brand-d);border-color:var(--brand-d)}
-.btn.ghost{background:transparent;color:var(--brand)}
-.btn.ghost:hover{background:rgba(30,111,217,.1)}
-@media (prefers-color-scheme:dark){.btn{color:#08111c}.btn.ghost{color:var(--brand)}}
-.drive{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;border-left:6px solid var(--accent)}
-.drive h2{margin:0 0 4px}.drive p{margin:0;color:var(--muted)}
-.steps{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));counter-reset:s;padding:0;margin:0;list-style:none}
-.steps li{counter-increment:s;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 16px 16px 56px;position:relative}
-.steps li::before{content:counter(s);position:absolute;left:14px;top:14px;width:30px;height:30px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:700}
-@media (prefers-color-scheme:dark){.steps li::before{color:#08111c}}
-.steps b{display:block}.steps span{color:var(--muted);font-size:14px}
-.tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
-.tabs{display:flex;gap:8px;flex-wrap:wrap}
-.tab{min-height:44px;padding:8px 16px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--text);font-weight:600;font-size:15px;font-family:inherit;cursor:pointer}
-.tab[aria-pressed="true"]{border-color:var(--brand);background:var(--brand);color:#fff}
-@media (prefers-color-scheme:dark){.tab[aria-pressed="true"]{color:#08111c}}
-#q{flex:1;min-width:200px;min-height:44px;padding:8px 14px;border-radius:12px;border:2px solid var(--line);background:var(--card);color:var(--text);font:inherit}
-#q:focus,.tab:focus-visible,.btn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
-.lesson{display:flex;flex-direction:column;gap:10px}
-.lesson h3{margin:0;font-size:18px;line-height:1.3}
-.lesson p{margin:0;color:var(--muted);font-size:14px;flex:1}
-.badge{align-self:flex-start;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:rgba(124,77,255,.14);color:var(--accent)}
-.row{display:flex;gap:8px;flex-wrap:wrap}.row .btn{flex:1;min-width:120px}
-.empty{text-align:center;color:var(--muted);padding:32px 16px}
-.tip{background:rgba(18,128,92,.1);border:1px solid var(--ok);border-radius:12px;padding:12px 14px;margin-top:12px;font-size:14px}
-footer{text-align:center;color:var(--muted);font-size:13px;padding:24px 16px}
+body{margin:0;background:#fff;color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+header{border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;gap:20px;padding-top:18px;padding-bottom:18px}
+header img{height:84px;width:auto;display:block}
+header h1{margin:0;font-size:clamp(22px,4.5vw,34px);line-height:1.1;letter-spacing:-.02em;font-weight:800;text-transform:uppercase;color:var(--navy)}
+header p{margin:4px 0 0;color:var(--muted);font-size:15px}
+.drive{background:var(--navy);color:#fff}
+.drive .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:22px;padding-bottom:22px}
+.drive h2{margin:0;font-size:19px;font-weight:700}
+.drive p{margin:2px 0 0;color:#b9c9e6;font-size:14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border:2px solid var(--navy);background:var(--navy);color:#fff;font:600 15px/1 inherit;font-family:inherit;text-decoration:none;border-radius:6px;cursor:pointer;white-space:nowrap}
+.btn:hover{background:var(--navy-d)}
+.btn.light{background:#fff;color:var(--navy);border-color:#fff}
+.btn.light:hover{background:var(--ice)}
+.btn.line{background:#fff;color:var(--navy)}
+.btn.line:hover{background:var(--ice)}
+.btn:focus-visible,.tab:focus-visible,#q:focus-visible{outline:3px solid #6aa0ff;outline-offset:2px}
+svg{width:18px;height:18px;flex:none}
+main.wrap{padding-top:36px;padding-bottom:56px}
+.bar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.tabs{display:flex;border:2px solid var(--navy);border-radius:6px;overflow:hidden}
+.tab{min-height:44px;padding:0 20px;border:0;background:#fff;color:var(--navy);font:600 15px/1 inherit;font-family:inherit;cursor:pointer}
+.tab+.tab{border-left:2px solid var(--navy)}
+.tab[aria-pressed="true"]{background:var(--navy);color:#fff}
+#q{flex:1;min-width:180px;min-height:44px;padding:0 14px;border:2px solid var(--line);border-radius:6px;font:inherit;color:var(--text)}
+#q:focus{border-color:var(--navy)}
+.list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.item{display:grid;grid-template-columns:48px 1fr auto;gap:8px 16px;align-items:center;padding:18px 0;border-bottom:1px solid var(--line)}
+.num{font-size:22px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums}
+.item h3{margin:0;font-size:18px;line-height:1.3}
+.item p{margin:2px 0 0;color:var(--muted);font-size:14px}
+.acts{display:flex;gap:8px}
+.empty{padding:40px 0;color:var(--muted);border-bottom:1px solid var(--line)}
+footer{background:var(--ice);color:var(--muted);font-size:13px}
+footer .wrap{padding-top:18px;padding-bottom:18px}
+@media(max-width:640px){
+  header img{height:64px}
+  .drive .btn{width:100%}
+  .tabs{width:100%}.tab{flex:1;padding:0 8px}
+  .item{grid-template-columns:36px 1fr}
+  .acts{grid-column:1/-1}.acts .btn{flex:1}
+}
 </style>
 </head>
 <body>
 <header>
   <div class="wrap">
-    <h1>❄ Зимовий ІТ табір</h1>
-    <p>Портал викладача: усі матеріали для уроків в одному місці. Відкрийте урок або завантажте його на комп'ютер.</p>
+    <img src="assets/logo.png" alt="STEP IT Academy">
+    <div>
+      <h1>Зимовий ІТ табір</h1>
+      <p>Матеріали уроків для викладачів</p>
+    </div>
   </div>
 </header>
 
+<div class="drive">
+  <div class="wrap">
+    <div>
+      <h2>Переглянути через Google Drive</h2>
+      <p>Усі матеріали табору на Google Drive</p>
+    </div>
+    <a class="btn light" href="https://drive.google.com/drive/folders/14n_8HJ8vh18R6vT1AVtsTLnG__IfH1kS" target="_blank" rel="noopener">Відкрити Google Drive
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+  </div>
+</div>
+
 <main class="wrap">
-  <section id="drive" style="margin-top:-24px;position:relative;z-index:1">
-    <div class="card drive">
-      <div>
-        <h2>📁 Переглянути через Google Drive</h2>
-        <p>Усі матеріали табору також лежать на Google Drive.</p>
-      </div>
-      <a class="btn" href="https://drive.google.com/drive/folders/14n_8HJ8vh18R6vT1AVtsTLnG__IfH1kS" target="_blank" rel="noopener">Відкрити Google Drive ↗</a>
+  <div class="bar">
+    <div class="tabs" role="group" aria-label="Вікова група">
+      <button class="tab" data-age="6-8" aria-pressed="true">6–8 років</button>
+      <button class="tab" data-age="9-12" aria-pressed="false">9–12 років</button>
     </div>
-  </section>
-
-  <section id="how">
-    <h2>Як користуватись</h2>
-    <ol class="steps">
-      <li><b>Оберіть вік</b><span>6–8 або 9–12 років. Можна скористатись пошуком.</span></li>
-      <li><b>Відкрийте урок</b><span>Кнопка «Відкрити» показує урок у браузері зі всіма вбудованими файлами.</span></li>
-      <li><b>Завантажте урок</b><span>Кнопка «Завантажити» зберігає один HTML-файл. Він працює без інтернету, просто відкрийте його в браузері.</span></li>
-    </ol>
-    <div class="tip">💡 Урок — це один файл, усі матеріали вже всередині. Скопіюйте його на флешку чи ноутбук, і більше нічого не потрібно.</div>
-  </section>
-
-  <section id="lessons">
-    <h2>Уроки</h2>
-    <div class="tools">
-      <div class="tabs" role="group" aria-label="Вікова група">
-        <button class="tab" data-age="all" aria-pressed="true">Усі</button>
-        <button class="tab" data-age="6-8" aria-pressed="false">6–8 років</button>
-        <button class="tab" data-age="9-12" aria-pressed="false">9–12 років</button>
-      </div>
-      <input id="q" type="search" placeholder="Пошук уроку…" aria-label="Пошук уроку">
-    </div>
-    <div id="list" class="grid"></div>
-  </section>
+    <input id="q" type="search" placeholder="Пошук уроку" aria-label="Пошук уроку">
+  </div>
+  <ol id="list" class="list"></ol>
 </main>
 
-<footer>Зимовий ІТ табір · статичний портал для GitHub Pages</footer>
+<footer><div class="wrap">STEP IT Academy · Зимовий ІТ табір</div></footer>
 
 <script src="lessons.js"></script>
 <script>
 (function(){
-  var lessons = window.LESSONS || [], age = "all", q = "";
+  var all = window.LESSONS || [], age = "6-8", q = "";
   var list = document.getElementById("list");
+  var dl = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg>';
   function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
   function render(){
-    var items = lessons.filter(function(l){
-      return (age==="all"||l.age===age) && (l.title+" "+(l.desc||"")).toLowerCase().indexOf(q)>-1;
-    });
-    if(!items.length){
-      list.innerHTML = '<div class="card empty" style="grid-column:1/-1">'+
-        (lessons.length ? "Нічого не знайдено." : "Уроків поки немає. Додайте HTML-файли в <code>lessons/6-8</code> або <code>lessons/9-12</code> і запустіть <code>python3 scripts/update-lessons.py</code>.")+'</div>';
-      return;
-    }
+    var items = all.filter(function(l){return l.age===age});
+    items.forEach(function(l,i){l._n=i+1});
+    items = items.filter(function(l){return (l.title+" "+(l.desc||"")).toLowerCase().indexOf(q)>-1});
+    if(!items.length){list.innerHTML='<li class="empty">'+(q?"Нічого не знайдено.":"Уроки для цієї групи скоро з’являться.")+'</li>';return}
     list.innerHTML = items.map(function(l){
-      var name = l.file.split("/").pop();
-      return '<article class="card lesson"><span class="badge">'+esc(l.age.replace("-","–"))+' років</span>'+
-        '<h3>'+esc(l.title)+'</h3>'+(l.desc?'<p>'+esc(l.desc)+'</p>':'<p></p>')+
-        '<div class="row"><a class="btn" href="'+encodeURI(l.file)+'" target="_blank" rel="noopener">Відкрити</a>'+
-        '<a class="btn ghost" href="'+encodeURI(l.file)+'" download="'+esc(name)+'">⬇ Завантажити</a></div></article>';
+      var f = encodeURI(l.file), name = l.file.split("/").pop();
+      return '<li class="item"><span class="num">'+String(l._n).padStart(2,"0")+'</span>'+
+        '<div><h3>'+esc(l.title)+'</h3>'+(l.desc?'<p>'+esc(l.desc)+'</p>':'')+'</div>'+
+        '<div class="acts"><a class="btn" href="'+f+'" target="_blank" rel="noopener">Відкрити</a>'+
+        '<a class="btn line" href="'+f+'" download="'+esc(name)+'">'+dl+'Завантажити</a></div></li>';
     }).join("");
   }
   document.querySelectorAll(".tab").forEach(function(b){
