@@ -42,7 +42,7 @@ footer{margin-top:auto}
 #q{flex:1;min-width:180px;min-height:44px;padding:0 14px;border:2px solid var(--line);border-radius:6px;font:inherit;color:var(--text)}
 #q:focus{border-color:var(--navy)}
 .list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
-.item{position:relative;transition:background .15s;display:grid;grid-template-columns:56px 1fr auto;gap:8px 16px;align-items:center;padding:18px 0;border-bottom:1px solid var(--line)}
+.item{position:relative;transition:background .15s;display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:8px 16px;align-items:center;padding:18px 0;border-bottom:1px solid var(--line)}
 .item:hover{background:var(--ice)}
 .item h3 a{color:inherit;text-decoration:none}
 .item h3 a::after{content:"";position:absolute;inset:0}
@@ -54,6 +54,8 @@ footer{margin-top:auto}
 .item h3{margin:0;font-size:18px;line-height:1.3}
 .item p{margin:2px 0 0;color:var(--muted);font-size:14px}
 .acts{display:flex;gap:8px}
+.item .acts{flex-wrap:wrap;justify-content:flex-end;max-width:600px}
+@media(min-width:900px){.item .acts{flex-wrap:nowrap;max-width:none}.item .acts .btn{padding:0 16px}}
 .item h3 a:focus-visible{outline:3px solid #6aa0ff;outline-offset:4px}
 .empty{padding:40px 0;color:var(--muted);border-bottom:1px solid var(--line)}
 nav.main{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line)}
@@ -111,7 +113,7 @@ footer .wrap{padding-top:18px;padding-bottom:18px}
   .drive .btn{width:100%}
   .tabs{width:100%}.tab{flex:1;padding:0 8px}
   .item{grid-template-columns:36px 1fr}
-  .acts{grid-column:1/-1}.acts .btn{flex:1}
+  .acts{grid-column:1/-1}.acts .btn{flex:1 1 140px}
 }
 </style>
 </head>
@@ -173,6 +175,8 @@ footer .wrap{padding-top:18px;padding-bottom:18px}
   var age = "6-8";
   var list = document.getElementById("list");
   var dl = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg>';
+  var icoSlides='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M12 16v4M8 20h8"/></svg>';
+  var icoExt='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>';
   function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
   function sync(){
     document.querySelectorAll("#sec-lessons .tab").forEach(function(t){
@@ -190,10 +194,12 @@ footer .wrap{padding-top:18px;padding-bottom:18px}
     if(!items.length){list.innerHTML='<li class="empty">'+(q?"Нічого не знайдено.":"Уроки для цієї групи скоро з’являться.")+'</li>';return}
     list.innerHTML = items.map(function(l){
       var f = encodeURI(l.file), name = l.file.split("/").pop();
+      var pres = l.presentation ? '<a class="btn line" href="'+encodeURI(l.presentation)+'" target="_blank" rel="noopener">'+icoSlides+'Презентація</a>' : "";
+      var extra = (l.links||[]).map(function(x){return '<a class="btn line" href="'+esc(x.url)+'" target="_blank" rel="noopener">'+esc(x.label)+icoExt+'</a>'}).join("");
       return '<li class="item"><span class="num">'+(l.day?'<small>День</small>'+l.day:String(l._n).padStart(2,"0"))+'</span>'+
         '<div><h3><a href="'+f+'" target="_blank" rel="noopener">'+esc(l.title)+'</a></h3>'+(l.desc?'<p>'+esc(l.desc)+'</p>':'')+'</div>'+
         '<div class="acts"><a class="btn" href="'+f+'" target="_blank" rel="noopener">Відкрити</a>'+
-        '<a class="btn line" href="'+f+'" download="'+esc(name)+'">'+dl+'Завантажити</a></div></li>';
+        pres+'<a class="btn line" href="'+f+'" download="'+esc(name)+'">'+dl+'Завантажити</a>'+extra+'</div></li>';
     }).join("");
   }
   document.querySelectorAll("#sec-lessons .tab").forEach(function(b){
