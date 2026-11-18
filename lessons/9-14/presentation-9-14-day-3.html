@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk">
-<head>
+<head><!--perf-optimized-->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Олімпіада у 3D</title>
@@ -53438,8 +53438,8 @@ const sfx={ctx:null,on:true,
 const cv=$('#arena'),cx=cv.getContext('2d');let W=0,H=0,DPR=1;const cam2={z:0,speed:0,pan:0};
 const crowd=Array.from({length:240},()=>({x:Math.random(),y:Math.random(),p:rnd(0,6),c:Math.random()<.15?'#b8f229':Math.random()<.3?'#38bdf8':'#ffffff'}));
 const flakes=Array.from({length:150},()=>({x:Math.random(),y:Math.random(),z:rnd(.3,1)}));
-function resize2(){DPR=Math.min(devicePixelRatio,2);W=innerWidth;H=innerHeight;for(const c of [cv,$('#fx')]){c.width=W*DPR;c.height=H*DPR}}
-function drawArena(t,dt){cx.setTransform(DPR,0,0,DPR,0,0);cx.clearRect(0,0,W,H);const hor=H*.56,vx=W/2+mouse.sx*-30+cam2.pan;cx.globalCompositeOperation='lighter';
+function resize2(){DPR=Math.min(devicePixelRatio,1.5);W=innerWidth;H=innerHeight;for(const c of [cv,$('#fx')]){c.width=W*DPR;c.height=H*DPR}}
+function drawArenaFull(t,dt){cx.setTransform(DPR,0,0,DPR,0,0);cx.clearRect(0,0,W,H);const hor=H*.56,vx=W/2+mouse.sx*-30+cam2.pan;cx.globalCompositeOperation='lighter';
   [['rgba(184,242,41,',0],['rgba(56,189,248,',2],['rgba(139,92,246,',4]].forEach(([col,ph],k)=>{cx.beginPath();for(let x=0;x<=W;x+=24){const y=H*(.12+k*.06)+Math.sin(x*.004+t*.4+ph)*30+Math.sin(x*.011+t*.7)*12;x?cx.lineTo(x,y):cx.moveTo(x,y)}
     for(let x=W;x>=0;x-=24){const y=H*(.12+k*.06)+Math.sin(x*.004+t*.4+ph)*30+Math.sin(x*.011+t*.7)*12+60;cx.lineTo(x,y)}cx.closePath();const g=cx.createLinearGradient(0,0,0,H*.4);g.addColorStop(0,col+'0)');g.addColorStop(.5,col+'.10)');g.addColorStop(1,col+'0)');cx.fillStyle=g;cx.fill()});
   for(const s of [-1,1]){const ox=s<0?W*.08:W*.92,a=Math.sin(t*.35+(s>0?1.5:0))*.35+(s<0?.55:-.55);cx.save();cx.translate(ox,-20);cx.rotate(a);const g=cx.createLinearGradient(0,0,0,H*1.1);g.addColorStop(0,'rgba(220,240,255,.22)');g.addColorStop(1,'rgba(220,240,255,0)');cx.fillStyle=g;cx.beginPath();cx.moveTo(-8,0);cx.lineTo(8,0);cx.lineTo(H*.22,H*1.1);cx.lineTo(-H*.22,H*1.1);cx.closePath();cx.fill();cx.restore()}
@@ -53449,13 +53449,16 @@ function drawArena(t,dt){cx.setTransform(DPR,0,0,DPR,0,0);cx.clearRect(0,0,W,H);
   cx.strokeStyle='rgba(255,255,255,.22)';cx.lineWidth=1;for(let i=-16;i<=16;i++){cx.beginPath();cx.moveTo(vx+i*W*.02,hor);cx.lineTo(vx+i*W*.16,H);cx.stroke()}
   cam2.z+=dt*(.25+cam2.speed*9);const fr=cam2.z%1;for(let k=0;k<16;k++){const tt=(k+fr)/16,y=hor+(H-hor)*tt*tt;cx.globalAlpha=tt*.5;cx.beginPath();cx.moveTo(0,y);cx.lineTo(W,y);cx.stroke()}cx.globalAlpha=1;
   for(const s of flakes){s.x+=dt*(.03+cam2.speed*.8)*s.z;s.y+=dt*(.05+cam2.speed*.3)*s.z;if(s.x>1.05)s.x-=1.1;if(s.y>1.05)s.y-=1.1;const x=s.x*W,y=s.y*H,l=2+cam2.speed*60*s.z;cx.strokeStyle=`rgba(255,255,255,${.35+.5*s.z})`;cx.lineWidth=1.2*s.z+.4;cx.beginPath();cx.moveTo(x,y);cx.lineTo(x-l,y-l*.4);cx.stroke()}}
+var _aa=0,_an=0,_ap=-9,_am=-9;
+function drawArena(t,dt){_aa+=dt;const mv=Math.abs(cam2.pan-_ap)>.01||Math.abs(mouse.sx-_am)>.002;
+  if(!mv&&cam2.speed<.1&&(_an++&1))return;_ap=cam2.pan;_am=mouse.sx;const d=_aa;_aa=0;drawArenaFull(t,d)}
 const fx=$('#fx'),fctx=fx.getContext('2d');let conf=[];
 function confetti(n=160){const cols=['#b8f229','#1d6fe0','#ffffff','#fbbf24','#8b5cf6'];for(let i=0;i<n;i++)conf.push({x:W*rnd(.2,.8),y:-20,vx:rnd(-220,220),vy:rnd(100,420),r:rnd(0,6),vr:rnd(-8,8),w:rnd(6,12),h:rnd(10,18),c:cols[i%cols.length],l:rnd(3,5)})}
-function drawFx(dt){fctx.setTransform(DPR,0,0,DPR,0,0);fctx.clearRect(0,0,W,H);for(const p of conf){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=60*dt;p.r+=p.vr*dt;p.l-=dt;fctx.save();fctx.translate(p.x,p.y);fctx.rotate(p.r);fctx.scale(1,Math.cos(p.r*2));fctx.fillStyle=p.c;fctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);fctx.restore()}conf=conf.filter(p=>p.l>0&&p.y<H+40)}
+function drawFx(dt){if(!conf.length){if(window.__fxd){fctx.setTransform(DPR,0,0,DPR,0,0);fctx.clearRect(0,0,W,H);window.__fxd=false}return}window.__fxd=true;fctx.setTransform(DPR,0,0,DPR,0,0);fctx.clearRect(0,0,W,H);for(const p of conf){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=60*dt;p.r+=p.vr*dt;p.l-=dt;fctx.save();fctx.translate(p.x,p.y);fctx.rotate(p.r);fctx.scale(1,Math.cos(p.r*2));fctx.fillStyle=p.c;fctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);fctx.restore()}conf=conf.filter(p=>p.l>0&&p.y<H+40)}
 
 /* ---------- three.js core ---------- */
-const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,preserveDrawingBuffer:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
 const canvas3=renderer.domElement;
 const pmrem=new THREE.PMREMGenerator(renderer);
@@ -53464,7 +53467,7 @@ const envTex=(()=>{const s=new THREE.Scene();const g=new THREE.SphereGeometry(20
   for(const [x,y,z,c] of [[8,10,6,'#ffffff'],[-9,6,-4,'#b8f229'],[0,12,-9,'#ffffff']]){const m=new THREE.Mesh(new THREE.PlaneGeometry(6,6),new THREE.MeshBasicMaterial({color:c,side:THREE.DoubleSide}));m.position.set(x,y,z);m.lookAt(0,0,0);s.add(m)}
   return pmrem.fromScene(s,.04).texture})();
 function mkScene(bg){const s=new THREE.Scene();s.background=new THREE.Color(bg);s.environment=envTex;
-  s.add(new THREE.HemisphereLight(0xdbeafe,0x1e293b,.9));const d=new THREE.DirectionalLight(0xffffff,2.2);d.position.set(6,12,8);d.castShadow=true;d.shadow.mapSize.set(2048,2048);Object.assign(d.shadow.camera,{left:-14,right:14,top:14,bottom:-14,near:1,far:50});d.shadow.bias=-.0005;s.add(d);
+  s.add(new THREE.HemisphereLight(0xdbeafe,0x1e293b,.9));const d=new THREE.DirectionalLight(0xffffff,2.2);d.position.set(6,12,8);d.castShadow=true;d.shadow.mapSize.set(1024,1024);Object.assign(d.shadow.camera,{left:-14,right:14,top:14,bottom:-14,near:1,far:50});d.shadow.bias=-.0005;s.add(d);
   const r=new THREE.DirectionalLight(0xb8f229,.6);r.position.set(-8,4,-6);s.add(r);return s}
 class Orbit{constructor(theta,phi,r,target){this.theta=theta;this.phi=phi;this.r=r;this.t=new THREE.Vector3(...target);this.cam=new THREE.PerspectiveCamera(40,1.6,.1,500);this.idle=-99;this.auto=true;this.apply()}
   apply(){const{theta,phi,r,t}=this;this.cam.position.set(t.x+r*Math.sin(phi)*Math.sin(theta),t.y+r*Math.cos(phi),t.z+r*Math.sin(phi)*Math.cos(theta));this.cam.lookAt(t)}
@@ -53655,12 +53658,13 @@ addEventListener('resize',()=>{resize2();size3()});resize2();
 /* ---------- loop ---------- */
 vBase();newPenguin();
 let last=now();
+var _r3=0;
 function loop(){const t=now(),dt=Math.min(.05,t-last);last=t;mouse.sx+=(mouse.x-mouse.sx)*.05;mouse.sy+=(mouse.y-mouse.sy)*.05;
   drawArena(t,dt);drawFx(dt);
   const pos=snowGeo.attributes.position.array;for(let i=0;i<snowN;i++){pos[i*3+1]-=dt*(.6+i%5*.15);pos[i*3]+=Math.sin(t+i)*dt*.2;if(pos[i*3+1]<0)pos[i*3+1]=16}snowGeo.attributes.position.needsUpdate=true;
   champ.g.position.y=1.1+Math.sin(t*1.6)*.06;
-  if(host){if(cur===4){for(const o of E){if(now()-o.idle>2.5){o.theta+=dt*.35;o.apply()}}renderExhibit()}
-    else{const o=ORB[cur],sc=[S0,S1,S2,S3,null,S0][cur];if(o&&sc){if(now()-o.idle>3.5&&!gsap.isTweening(o)){if(cur===0||cur===5){o.theta+=(Math.sin(t*.35)*.7-o.theta)*dt*.8;o.apply()}else if(cur===3){o.theta+=dt*.25;o.apply()}}renderer.render(sc,o.cam)}}}
+  if(host){if(cur===4){for(const o of E){if(now()-o.idle>2.5){o.theta+=dt*.35;o.apply()}}if(!(E.every(o=>now()-o.idle>2.5)&&(_r3++&1)))renderExhibit()}
+    else{const o=ORB[cur],sc=[S0,S1,S2,S3,null,S0][cur];if(o&&sc){if(now()-o.idle>3.5&&!gsap.isTweening(o)){if(cur===0||cur===5){o.theta+=(Math.sin(t*.35)*.7-o.theta)*dt*.8;o.apply()}else if(cur===3){o.theta+=dt*.25;o.apply()}}if(!(now()-o.idle>3.5&&!gsap.isTweening(o)&&(_r3++&1)))renderer.render(sc,o.cam)}}}
   requestAnimationFrame(loop)}
 nav();loop();
 const cnt=$('#count');cam2.speed=.6;const intro=gsap.timeline();

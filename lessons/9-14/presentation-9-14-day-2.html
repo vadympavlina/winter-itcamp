@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk">
-<head>
+<head><!--perf-optimized-->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Крижаний виклик</title>
@@ -457,8 +457,8 @@ const cv=$('#arena'),cx=cv.getContext('2d');let W=0,H=0,DPR=1;
 const cam={z:0,speed:0,pan:0};
 const crowd=Array.from({length:240},()=>({x:Math.random(),y:Math.random(),p:rnd(0,6),c:Math.random()<.15?'#b8f229':Math.random()<.3?'#38bdf8':'#ffffff'}));
 const flakes=Array.from({length:150},()=>({x:Math.random(),y:Math.random(),z:rnd(.3,1)}));
-function resize(){DPR=Math.min(devicePixelRatio,2);W=innerWidth;H=innerHeight;for(const c of [cv,$('#fx')]){c.width=W*DPR;c.height=H*DPR}}
-function drawArena(t,dt){cx.setTransform(DPR,0,0,DPR,0,0);cx.clearRect(0,0,W,H);const hor=H*.56,vx=W/2+mouse.sx*-30+cam.pan;
+function resize(){DPR=Math.min(devicePixelRatio,1.5);W=innerWidth;H=innerHeight;for(const c of [cv,$('#fx')]){c.width=W*DPR;c.height=H*DPR}}
+function drawArenaFull(t,dt){cx.setTransform(DPR,0,0,DPR,0,0);cx.clearRect(0,0,W,H);const hor=H*.56,vx=W/2+mouse.sx*-30+cam.pan;
   cx.globalCompositeOperation='lighter';
   [['rgba(184,242,41,',0],['rgba(56,189,248,',2],['rgba(139,92,246,',4]].forEach(([col,ph],k)=>{cx.beginPath();for(let x=0;x<=W;x+=24){const y=H*(.12+k*.06)+Math.sin(x*.004+t*.4+ph)*30+Math.sin(x*.011+t*.7)*12;x?cx.lineTo(x,y):cx.moveTo(x,y)}
     for(let x=W;x>=0;x-=24){const y=H*(.12+k*.06)+Math.sin(x*.004+t*.4+ph)*30+Math.sin(x*.011+t*.7)*12+60;cx.lineTo(x,y)}cx.closePath();const g=cx.createLinearGradient(0,0,0,H*.4);g.addColorStop(0,col+'0)');g.addColorStop(.5,col+'.10)');g.addColorStop(1,col+'0)');cx.fillStyle=g;cx.fill()});
@@ -473,10 +473,13 @@ function drawArena(t,dt){cx.setTransform(DPR,0,0,DPR,0,0);cx.clearRect(0,0,W,H);
   const ry=hor+(H-hor)*.55;cx.strokeStyle='rgba(239,68,68,.45)';cx.lineWidth=3;cx.beginPath();cx.ellipse(vx,ry,W*.18,(H-hor)*.16,0,0,7);cx.stroke();
   for(const s of flakes){s.x+=dt*(.03+cam.speed*.8)*s.z;s.y+=dt*(.05+cam.speed*.3)*s.z;if(s.x>1.05)s.x-=1.1;if(s.y>1.05)s.y-=1.1;const x=s.x*W-mouse.sx*20*s.z,y=s.y*H,l=2+cam.speed*60*s.z;cx.strokeStyle=`rgba(255,255,255,${.35+.5*s.z})`;cx.lineWidth=1.2*s.z+.4;cx.beginPath();cx.moveTo(x,y);cx.lineTo(x-l,y-l*.4);cx.stroke()}}
 
+var _aa=0,_an=0,_ap=-9,_am=-9;
+function drawArena(t,dt){_aa+=dt;const mv=Math.abs(cam.pan-_ap)>.01||Math.abs(mouse.sx-_am)>.002;
+  if(!mv&&cam.speed<.1&&(_an++&1))return;_ap=cam.pan;_am=mouse.sx;const d=_aa;_aa=0;drawArenaFull(t,d)}
 /* confetti */
 const fx=$('#fx'),fctx=fx.getContext('2d');let conf=[];
 function confetti(n=160){const cols=['#b8f229','#1d6fe0','#ffffff','#fbbf24','#38bdf8'];for(let i=0;i<n;i++)conf.push({x:W*rnd(.2,.8),y:-20,vx:rnd(-220,220),vy:rnd(100,420),r:rnd(0,6),vr:rnd(-8,8),w:rnd(6,12),h:rnd(10,18),c:cols[i%cols.length],l:rnd(3,5)})}
-function drawFx(dt){fctx.setTransform(DPR,0,0,DPR,0,0);fctx.clearRect(0,0,W,H);for(const p of conf){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=60*dt;p.r+=p.vr*dt;p.l-=dt;fctx.save();fctx.translate(p.x,p.y);fctx.rotate(p.r);fctx.scale(1,Math.cos(p.r*2));fctx.fillStyle=p.c;fctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);fctx.restore()}conf=conf.filter(p=>p.l>0&&p.y<H+40)}
+function drawFx(dt){if(!conf.length){if(window.__fxd){fctx.setTransform(DPR,0,0,DPR,0,0);fctx.clearRect(0,0,W,H);window.__fxd=false}return}window.__fxd=true;fctx.setTransform(DPR,0,0,DPR,0,0);fctx.clearRect(0,0,W,H);for(const p of conf){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=60*dt;p.r+=p.vr*dt;p.l-=dt;fctx.save();fctx.translate(p.x,p.y);fctx.rotate(p.r);fctx.scale(1,Math.cos(p.r*2));fctx.fillStyle=p.c;fctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);fctx.restore()}conf=conf.filter(p=>p.l>0&&p.y<H+40)}
 
 /* ---------- level + game engine ---------- */
 const GY=470;
